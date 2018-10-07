@@ -1,5 +1,6 @@
 import React from "react";
 import Table from "../../components/Tables/Table";
+import Typography from "@material-ui/core/Typography";
 
 let id = 0;
 export const createMyRestuarantsVotesData = (name, vote) => {
@@ -16,8 +17,14 @@ const data = [
 export default class MyVotes extends React.Component {
   render() {
     return (
-      <section>
-        <h2>My Votes Page</h2>
+      <section style={{ marginTop: 50 }}>
+        <Typography
+          variant="title"
+          color="inherit"
+          style={{ textAlign: "center", marginBottom: 50 }}
+        >
+          My Votes
+        </Typography>
         <div
           style={{
             display: "flex",

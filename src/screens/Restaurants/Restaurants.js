@@ -1,5 +1,6 @@
 import React from "react";
 import Table from "../../components/Tables/Table";
+import Typography from "@material-ui/core/Typography";
 
 let id = 0;
 export const createRestuarantsData = (name, voters) => {
@@ -29,8 +30,15 @@ const data = [
 export default class Restaurants extends React.Component {
   render() {
     return (
-      <div>
-        <h1>Resatuarnts Page</h1>
+      <section style={{ marginTop: 50 }}>
+        <Typography
+          variant="title"
+          color="inherit"
+          style={{ textAlign: "center", marginBottom: 50 }}
+        >
+          Resatuarnts
+        </Typography>
+
         <div style={{ display: "flex", justifyContent: "space-around" }}>
           <Table
             color="white"
@@ -61,7 +69,7 @@ export default class Restaurants extends React.Component {
             data={data}
           />
         </div>
-      </div>
+      </section>
     );
   }
 }
