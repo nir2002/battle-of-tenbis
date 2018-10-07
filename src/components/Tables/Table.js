@@ -10,7 +10,7 @@ import { CustomizedTableCell } from "./utils";
 
 const styles = theme => ({
   root: {
-    width: "30%",
+    width: "35%",
     marginTop: theme.spacing.unit * 3,
     overflowX: "auto"
   },
