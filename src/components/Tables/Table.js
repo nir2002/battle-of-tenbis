@@ -35,7 +35,9 @@ function CustomizedTable(props) {
         <TableHead>
           <TableRow>
             {rows.map((row, index) => (
-              <TableCell key={index}>{row.label}</TableCell>
+              <TableCell style={{ textAlign: "center" }} key={index}>
+                {row.label}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -43,7 +45,9 @@ function CustomizedTable(props) {
           {data.map(rowData => (
             <TableRow className={classes.row} key={rowData.id}>
               {rows.map((row, index) => (
-                <TableCell key={index}>{row.value(rowData)}</TableCell>
+                <TableCell style={{ textAlign: "center" }} key={index}>
+                  {row.value(rowData)}
+                </TableCell>
               ))}
             </TableRow>
           ))}
