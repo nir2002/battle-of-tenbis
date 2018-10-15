@@ -9,6 +9,10 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { Link } from "react-router-dom";
+import { signInWithGoogle, signOut } from "./../../api/";
+import Button from "@material-ui/core/Button";
+import Avatar from "@material-ui/core/Avatar";
+import deepOrange from "@material-ui/core/colors/deepOrange";
 
 const styles = {
   root: {
@@ -20,17 +24,16 @@ const styles = {
   menuButton: {
     marginLeft: -12,
     marginRight: 20
+  },
+  orangeAvatar: {
+    color: "#fff",
+    backgroundColor: deepOrange[500]
   }
 };
 
 class MenuAppBar extends React.Component {
   state = {
-    auth: true,
     anchorEl: null
-  };
-
-  handleChange = event => {
-    this.setState({ auth: event.target.checked });
   };
 
   handleMenu = event => {
@@ -42,8 +45,8 @@ class MenuAppBar extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
-    const { auth, anchorEl } = this.state;
+    const { classes, user } = this.props;
+    const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
 
     return (
@@ -57,7 +60,7 @@ class MenuAppBar extends React.Component {
             >
               The Battle of TenBis
             </Typography>
-            {auth && (
+            {user && (
               <div>
                 <IconButton
                   aria-owns={open ? "menu-appbar" : null}
@@ -65,7 +68,13 @@ class MenuAppBar extends React.Component {
                   onClick={this.handleMenu}
                   color="inherit"
                 >
-                  <AccountCircle />
+                  <Avatar
+                    alt={user.displayName}
+                    src={user.photoURL}
+                    className={classes.orangeAvatar}
+                  >
+                    {user.displayName[0]}
+                  </Avatar>
                 </IconButton>
                 <Menu
                   id="menu-appbar"
@@ -82,13 +91,20 @@ class MenuAppBar extends React.Component {
                   onClose={this.handleClose}
                 >
                   <MenuItem onClick={this.handleClose}>
-                    <Link to="my-votes" style={{ textDecoration: "none" }}>
+                    <Link
+                      to="my-votes"
+                      style={{
+                        textDecoration: "none"
+                      }}
+                    >
                       My Votes
                     </Link>
                   </MenuItem>
+                  <MenuItem onClick={signOut}>Sign Out</MenuItem> :
                 </Menu>
               </div>
             )}
+            {!user && <Button onClick={signInWithGoogle}>Sign In</Button>}
           </Toolbar>
         </AppBar>
       </div>
