@@ -32,7 +32,7 @@ export default class Restaurants extends React.Component {
     return (
       <section style={{ marginTop: 50 }}>
         <Typography
-          variant="title"
+          variant="h6"
           color="inherit"
           style={{ textAlign: "center", marginBottom: 50 }}
         >

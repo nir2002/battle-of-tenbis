@@ -23,7 +23,7 @@ export default class MyVotes extends React.Component {
     return (
       <section style={{ marginTop: 50 }}>
         <Typography
-          variant="title"
+          variant="h6"
           color="inherit"
           style={{ textAlign: "center", marginBottom: 50 }}
         >
@@ -48,7 +48,7 @@ export default class MyVotes extends React.Component {
                     style={{ display: "flex", justifyContent: "space-around" }}
                   >
                     <Button
-                      variant={"flat"}
+                      variant="text"
                       color="primary"
                       aria-label="White List"
                       mini
@@ -57,7 +57,7 @@ export default class MyVotes extends React.Component {
                       <CheckIcon />
                     </Button>
                     <Button
-                      variant={"flat"}
+                      variant="text"
                       color="secondary"
                       aria-label="Black List"
                       mini
