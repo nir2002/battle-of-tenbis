@@ -3,7 +3,7 @@ import { Route, Redirect, Switch } from "react-router-dom";
 import Restaurants from "./screens/Restaurants";
 import MyVotes from "./screens/MyVotes";
 import AppBar from "./components/AppBar";
-import { initalizeFirebase } from "./api";
+import { initalizeFirebase, getAuthenticatedUserVotes } from "./api";
 import firebase from "firebase/app";
 import "./App.css";
 
@@ -21,6 +21,8 @@ class App extends Component {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         // User is signed in.
+
+        const userVotes = getAuthenticatedUserVotes();
         this.setState({
           user: {
             displayName: user.displayName,
@@ -29,7 +31,8 @@ class App extends Component {
             photoURL: user.photoURL,
             isAnonymous: user.isAnonymous,
             uid: user.uid,
-            providerData: user.providerData
+            providerData: user.providerData,
+            votes: userVotes
           }
         });
       } else {

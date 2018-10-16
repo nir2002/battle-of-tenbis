@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 require("firebase/auth");
+require("firebase/database");
 
 export function initalizeFirebase() {
   const config = {
@@ -22,9 +23,9 @@ export function signInWithGoogle() {
     .signInWithPopup(provider)
     .then(function(result) {
       // This gives you a Google Access Token. You can use it to access the Google API.
-      var token = result.credential.accessToken;
+      // var token = result.credential.accessToken;
       // The signed-in user info.
-      var user = result.user;
+      // var user = result.user;
       // ...
     })
     .catch(function(error) {
@@ -42,4 +43,60 @@ export function signInWithGoogle() {
 
 export function signOut() {
   firebase.auth().signOut();
+}
+
+export function getResturants() {
+  const resturantsRef = firebase.database().ref("/restaurants/");
+
+  return resturantsRef.once("value").then(snapshot => {
+    const result = [];
+    snapshot.forEach(childSnapshot => {
+      result.push(childSnapshot.key);
+    });
+    return result;
+  });
+}
+
+export function getAuthenticatedUserVotes() {
+  const userId = firebase.auth().currentUser.uid;
+  const usersRef = firebase.database().ref("/users/");
+
+  return usersRef.once("value").then(snapshot => {
+    const userVotes = {};
+    snapshot.forEach(childSnapshot => {
+      if (childSnapshot.key === userId) {
+        childSnapshot.forEach(vote => {
+          userVotes[vote.key] = vote.val();
+        });
+      }
+    });
+
+    return userVotes;
+  });
+}
+
+export function getRestaurantVotes(restaurantId) {
+  const resturantsRef = firebase.database().ref("/restaurants/");
+
+  return resturantsRef.once("value").then(snapshot => {
+    const result = {};
+    snapshot.forEach(childSnapshot => {
+      if (childSnapshot.key === restaurantId) {
+        childSnapshot.forEach(vote => {
+          result[vote.key] = vote.val();
+        });
+      }
+    });
+    return result;
+  });
+}
+
+export function vote(restaurantId, vote) {
+  const userId = firebase.auth().currentUser.uid;
+  firebase
+    .database()
+    .ref("users/" + userId)
+    .update({
+      [restaurantId]: vote
+    });
 }
