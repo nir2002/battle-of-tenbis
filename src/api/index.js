@@ -45,6 +45,42 @@ export function signOut() {
   firebase.auth().signOut();
 }
 
+export function getRestaurantsData() {
+  const resturantsRef = firebase.database().ref("/restaurants/");
+
+  return resturantsRef.once("value").then(snapshot => {
+    const result = [];
+    let idCount = 0;
+    snapshot.forEach(childSnapshot => {
+      const voters = Object.values(childSnapshot.val());
+      const decision = getRestaurantVoteDecision(voters);
+      result.push({
+        id: idCount++,
+        name: childSnapshot.key,
+        voters,
+        decision
+      });
+    });
+    return result;
+  });
+}
+
+function getRestaurantVoteDecision(voters) {
+  let votesCount = {
+    white: 0,
+    black: 0
+  };
+  voters.forEach(voter => {
+    votesCount[voter.vote]++;
+  });
+
+  if (votesCount.white >= votesCount.black) {
+    return "white";
+  } else {
+    return "black";
+  }
+}
+
 export function getRestaurantsNames() {
   const resturantsRef = firebase.database().ref("/restaurants/");
 

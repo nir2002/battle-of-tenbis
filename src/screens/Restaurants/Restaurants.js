@@ -1,33 +1,28 @@
 import React from "react";
 import Table from "../../components/Tables/Table";
 import Typography from "@material-ui/core/Typography";
-
-let id = 0;
-export const createRestuarantsData = (name, voters) => {
-  return { id: id++, name, ...voters };
-};
-
-const data = [
-  createRestuarantsData("Yashka", [{ name: "Nir" }, { name: "Dan" }]),
-  createRestuarantsData("Piazza", [{ name: "Ben" }, { name: "Dan" }]),
-  createRestuarantsData("Restaurant 3", [
-    { name: "Ben" },
-    { name: "Avi" },
-    { name: "Alon" }
-  ]),
-  createRestuarantsData("Restaurant 4", [
-    { name: "Naor" },
-    { name: "Nir" },
-    { name: "Lev" }
-  ]),
-  createRestuarantsData("Restaurant 5", [
-    { name: "Eyal" },
-    { name: "Lev" },
-    { name: "Avi" }
-  ])
-];
+import { getRestaurantsData } from "./../../api";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 export default class Restaurants extends React.Component {
+  state = {
+    whiteListRestaurants: [],
+    blackListRestaurants: []
+  };
+
+  componentDidMount() {
+    getRestaurantsData().then(data => {
+      this.setState({
+        whiteListRestaurants: data.filter(
+          restaurant => restaurant.decision === "white"
+        ),
+        blackListRestaurants: data.filter(
+          restaurant => restaurant.decision === "black"
+        )
+      });
+    });
+  }
+
   render() {
     return (
       <section style={{ marginTop: 50 }}>
@@ -40,34 +35,42 @@ export default class Restaurants extends React.Component {
         </Typography>
 
         <div style={{ display: "flex", justifyContent: "space-around" }}>
-          <Table
-            color="white"
-            rows={[
-              {
-                label: "Name",
-                value: data => data.name
-              },
-              {
-                label: "Voters",
-                value: data => data.voters
-              }
-            ]}
-            data={data}
-          />
-          <Table
-            color="black"
-            rows={[
-              {
-                label: "Name",
-                value: data => data.name
-              },
-              {
-                label: "Voters",
-                value: data => data.voters
-              }
-            ]}
-            data={data}
-          />
+          {this.state.whiteListRestaurants.length === 0 ? (
+            <CircularProgress color="secondary" size={50} />
+          ) : (
+            <Table
+              color="white"
+              rows={[
+                {
+                  label: "Name",
+                  value: data => data.name
+                },
+                {
+                  label: "Voters",
+                  value: data => data.voters.map(voter => voter.name).join(", ")
+                }
+              ]}
+              data={this.state.whiteListRestaurants}
+            />
+          )}
+          {this.state.whiteListRestaurants.length === 0 ? (
+            <CircularProgress color="secondary" size={50} />
+          ) : (
+            <Table
+              color="black"
+              rows={[
+                {
+                  label: "Name",
+                  value: data => data.name
+                },
+                {
+                  label: "Voters",
+                  value: data => data.voters.map(voter => voter.name).join(", ")
+                }
+              ]}
+              data={this.state.blackListRestaurants}
+            />
+          )}
         </div>
       </section>
     );
