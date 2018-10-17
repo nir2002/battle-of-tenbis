@@ -13,10 +13,14 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 export default class MyVotes extends React.Component {
   state = {
-    userVotes: []
+    userVotes: null
   };
 
-  componentDidUpdate() {
+  componentDidMount() {
+    this.fetchUserVotes();
+  }
+
+  fetchUserVotes() {
     getRestaurantsNames().then(restaurants => {
       getAuthenticatedUserVotes().then(userVotes => {
         const userVotesData = [];
@@ -39,6 +43,11 @@ export default class MyVotes extends React.Component {
     });
   }
 
+  componentDidUpdate() {
+    if (this.state.userVotes) return;
+    this.fetchUserVotes();
+  }
+
   render() {
     return (
       <section style={{ marginTop: 50 }}>
@@ -55,7 +64,7 @@ export default class MyVotes extends React.Component {
             justifyContent: "center"
           }}
         >
-          {this.state.userVotes.length === 0 ? (
+          {!this.state.userVotes ? (
             <CircularProgress color="secondary" size={50} />
           ) : (
             <Table
@@ -81,7 +90,7 @@ export default class MyVotes extends React.Component {
                         disabled={data.vote === "white"}
                         onClick={() => {
                           vote(data.name, "white").then(() => {
-                            this.forceUpdate();
+                            this.setState({ userVotes: null });
                           });
                         }}
                       >
@@ -95,7 +104,7 @@ export default class MyVotes extends React.Component {
                         disabled={data.vote === "black"}
                         onClick={() => {
                           vote(data.name, "black").then(() => {
-                            this.forceUpdate();
+                            this.setState({ userVotes: null });
                           });
                         }}
                       >
