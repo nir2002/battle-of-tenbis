@@ -10,8 +10,15 @@ import {
   vote
 } from "./../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { withStyles } from "@material-ui/core";
 
-export default class MyVotes extends React.Component {
+const styles = {
+  userVote: {
+    backgroundColor: "#e28c36"
+  }
+};
+
+class MyVotes extends React.Component {
   state = {
     userVotes: null
   };
@@ -49,6 +56,8 @@ export default class MyVotes extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     return (
       <section style={{ marginTop: 50 }}>
         <Typography
@@ -88,6 +97,9 @@ export default class MyVotes extends React.Component {
                         aria-label="White List"
                         mini
                         disabled={data.vote === "white"}
+                        className={
+                          data.vote === "white" ? classes.userVote : ""
+                        }
                         onClick={() => {
                           vote(data.name, "white").then(() => {
                             this.setState({ userVotes: null });
@@ -102,6 +114,9 @@ export default class MyVotes extends React.Component {
                         aria-label="Black List"
                         mini
                         disabled={data.vote === "black"}
+                        className={
+                          data.vote === "black" ? classes.userVote : ""
+                        }
                         onClick={() => {
                           vote(data.name, "black").then(() => {
                             this.setState({ userVotes: null });
@@ -122,3 +137,5 @@ export default class MyVotes extends React.Component {
     );
   }
 }
+
+export default withStyles(styles)(MyVotes);
