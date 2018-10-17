@@ -4,7 +4,11 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
-import { getRestaurants, getAuthenticatedUserVotes, vote } from "./../../api";
+import {
+  getRestaurantsNames,
+  getAuthenticatedUserVotes,
+  vote
+} from "./../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 export default class MyVotes extends React.Component {
@@ -13,7 +17,7 @@ export default class MyVotes extends React.Component {
   };
 
   componentDidUpdate() {
-    getRestaurants().then(restaurants => {
+    getRestaurantsNames().then(restaurants => {
       getAuthenticatedUserVotes().then(userVotes => {
         const userVotesData = [];
         restaurants.forEach((restaurant, index) => {

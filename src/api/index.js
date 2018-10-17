@@ -45,7 +45,7 @@ export function signOut() {
   firebase.auth().signOut();
 }
 
-export function getRestaurants() {
+export function getRestaurantsNames() {
   const resturantsRef = firebase.database().ref("/restaurants/");
 
   return resturantsRef.once("value").then(snapshot => {
