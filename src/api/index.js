@@ -93,10 +93,19 @@ export function getRestaurantVotes(restaurantId) {
 
 export function vote(restaurantId, vote) {
   const userId = firebase.auth().currentUser.uid;
-  firebase
-    .database()
-    .ref("users/" + userId)
-    .update({
-      [restaurantId]: vote
-    });
+  return Promise.all([
+    firebase
+      .database()
+      .ref("users/" + userId)
+      .update({
+        [restaurantId]: vote
+      }),
+    firebase
+      .database()
+      .ref("restaurants/" + restaurantId + "/" + userId)
+      .update({
+        name: firebase.auth().currentUser.displayName,
+        vote
+      })
+  ]);
 }

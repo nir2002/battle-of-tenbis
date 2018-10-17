@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
-import { getRestaurants, getAuthenticatedUserVotes } from "./../../api";
+import { getRestaurants, getAuthenticatedUserVotes, vote } from "./../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 export default class MyVotes extends React.Component {
@@ -12,7 +12,7 @@ export default class MyVotes extends React.Component {
     userVotes: []
   };
 
-  componentDidMount() {
+  componentDidUpdate() {
     getRestaurants().then(restaurants => {
       getAuthenticatedUserVotes().then(userVotes => {
         const userVotesData = [];
@@ -75,6 +75,11 @@ export default class MyVotes extends React.Component {
                         aria-label="White List"
                         mini
                         disabled={data.vote === "white"}
+                        onClick={() => {
+                          vote(data.name, "white").then(() => {
+                            this.forceUpdate();
+                          });
+                        }}
                       >
                         <CheckIcon />
                       </Button>
@@ -84,6 +89,11 @@ export default class MyVotes extends React.Component {
                         aria-label="Black List"
                         mini
                         disabled={data.vote === "black"}
+                        onClick={() => {
+                          vote(data.name, "black").then(() => {
+                            this.forceUpdate();
+                          });
+                        }}
                       >
                         <CloseIcon />
                       </Button>
