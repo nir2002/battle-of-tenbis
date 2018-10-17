@@ -4,21 +4,37 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
+import { getRestaurants, getAuthenticatedUserVotes } from "./../../api";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
-let id = 0;
-export const createMyRestuarantsVotesData = (name, vote) => {
-  return { id: id++, name, vote };
-};
-
-const data = [
-  createMyRestuarantsVotesData("Yashka", "white"),
-  createMyRestuarantsVotesData("Piazza", "white"),
-  createMyRestuarantsVotesData("Restaurant 3", "black"),
-  createMyRestuarantsVotesData("Restaurant 4", "black"),
-  createMyRestuarantsVotesData("Restaurant 5", "black"),
-  createMyRestuarantsVotesData("Restaurant 6")
-];
 export default class MyVotes extends React.Component {
+  state = {
+    userVotes: []
+  };
+
+  componentDidMount() {
+    getRestaurants().then(restaurants => {
+      getAuthenticatedUserVotes().then(userVotes => {
+        const userVotesData = [];
+        restaurants.forEach((restaurant, index) => {
+          const userVote = {
+            id: index,
+            name: restaurant,
+            vote: null
+          };
+          if (userVotes[restaurant]) {
+            userVote.vote = userVotes[restaurant];
+          }
+          userVotesData.push(userVote);
+        });
+
+        this.setState({
+          userVotes: userVotesData
+        });
+      });
+    });
+  }
+
   render() {
     return (
       <section style={{ marginTop: 50 }}>
@@ -35,42 +51,49 @@ export default class MyVotes extends React.Component {
             justifyContent: "center"
           }}
         >
-          <Table
-            rows={[
-              {
-                label: "Name",
-                value: data => data.name
-              },
-              {
-                label: "Vote",
-                value: data => (
-                  <div
-                    style={{ display: "flex", justifyContent: "space-around" }}
-                  >
-                    <Button
-                      variant="text"
-                      color="primary"
-                      aria-label="White List"
-                      mini
-                      disabled={data.vote === "white"}
+          {this.state.userVotes.length === 0 ? (
+            <CircularProgress color="secondary" size={50} />
+          ) : (
+            <Table
+              rows={[
+                {
+                  label: "Name",
+                  value: data => data.name
+                },
+                {
+                  label: "Vote",
+                  value: data => (
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-around"
+                      }}
                     >
-                      <CheckIcon />
-                    </Button>
-                    <Button
-                      variant="text"
-                      color="secondary"
-                      aria-label="Black List"
-                      mini
-                      disabled={data.vote === "black"}
-                    >
-                      <CloseIcon />
-                    </Button>
-                  </div>
-                )
-              }
-            ]}
-            data={data}
-          />
+                      <Button
+                        variant="text"
+                        color="primary"
+                        aria-label="White List"
+                        mini
+                        disabled={data.vote === "white"}
+                      >
+                        <CheckIcon />
+                      </Button>
+                      <Button
+                        variant="text"
+                        color="secondary"
+                        aria-label="Black List"
+                        mini
+                        disabled={data.vote === "black"}
+                      >
+                        <CloseIcon />
+                      </Button>
+                    </div>
+                  )
+                }
+              ]}
+              data={this.state.userVotes}
+            />
+          )}
         </div>
       </section>
     );
