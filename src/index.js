@@ -1,14 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider } from "mobx-react";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
+import RestaurntsStore from "./stores/Restaurants";
+
+const stores = {
+  restaurantsStore: new RestaurntsStore()
+};
 
 ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <Provider {...stores}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>,
   document.getElementById("root")
 );
 

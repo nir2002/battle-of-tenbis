@@ -1,29 +1,23 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import Table from "../../components/Tables/Table";
 import Typography from "@material-ui/core/Typography";
-import { getRestaurantsData } from "./../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-export default class Restaurants extends React.Component {
+class Restaurants extends React.Component {
   state = {
     whiteListRestaurants: [],
     blackListRestaurants: []
   };
 
   componentDidMount() {
-    getRestaurantsData().then(data => {
-      this.setState({
-        whiteListRestaurants: data.filter(
-          restaurant => restaurant.decision === "white"
-        ),
-        blackListRestaurants: data.filter(
-          restaurant => restaurant.decision === "black"
-        )
-      });
-    });
+    const { restaurantsStore } = this.props;
+    restaurantsStore.fetchRestaurantsData();
   }
 
   render() {
+    const { restaurantsStore } = this.props;
+
     return (
       <section style={{ marginTop: 50 }}>
         <Typography
@@ -35,7 +29,7 @@ export default class Restaurants extends React.Component {
         </Typography>
 
         <div style={{ display: "flex", justifyContent: "space-around" }}>
-          {this.state.whiteListRestaurants.length === 0 ? (
+          {restaurantsStore.whiteListRestaurants.length === 0 ? (
             <CircularProgress color="secondary" size={50} />
           ) : (
             <Table
@@ -50,10 +44,10 @@ export default class Restaurants extends React.Component {
                   value: data => data.voters.map(voter => voter.name).join(", ")
                 }
               ]}
-              data={this.state.whiteListRestaurants}
+              data={restaurantsStore.whiteListRestaurants}
             />
           )}
-          {this.state.whiteListRestaurants.length === 0 ? (
+          {restaurantsStore.blackListRestaurants.length === 0 ? (
             <CircularProgress color="secondary" size={50} />
           ) : (
             <Table
@@ -68,7 +62,7 @@ export default class Restaurants extends React.Component {
                   value: data => data.voters.map(voter => voter.name).join(", ")
                 }
               ]}
-              data={this.state.blackListRestaurants}
+              data={restaurantsStore.blackListRestaurants}
             />
           )}
         </div>
@@ -76,3 +70,5 @@ export default class Restaurants extends React.Component {
     );
   }
 }
+
+export default inject("restaurantsStore")(observer(Restaurants));
