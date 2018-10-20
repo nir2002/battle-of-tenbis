@@ -5,11 +5,6 @@ import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 class Restaurants extends React.Component {
-  state = {
-    whiteListRestaurants: [],
-    blackListRestaurants: []
-  };
-
   componentDidMount() {
     const { restaurantsStore } = this.props;
     restaurantsStore.fetchRestaurantsData();
@@ -29,7 +24,7 @@ class Restaurants extends React.Component {
         </Typography>
 
         <div style={{ display: "flex", justifyContent: "space-around" }}>
-          {restaurantsStore.whiteListRestaurants.length === 0 ? (
+          {restaurantsStore.fetching ? (
             <CircularProgress color="secondary" size={50} />
           ) : (
             <Table
@@ -47,7 +42,7 @@ class Restaurants extends React.Component {
               data={restaurantsStore.whiteListRestaurants}
             />
           )}
-          {restaurantsStore.blackListRestaurants.length === 0 ? (
+          {restaurantsStore.fetching ? (
             <CircularProgress color="secondary" size={50} />
           ) : (
             <Table
