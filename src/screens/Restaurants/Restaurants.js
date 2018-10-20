@@ -53,7 +53,7 @@ export default class Restaurants extends React.Component {
               data={this.state.whiteListRestaurants}
             />
           )}
-          {this.state.whiteListRestaurants.length === 0 ? (
+          {this.state.blackListRestaurants.length === 0 ? (
             <CircularProgress color="secondary" size={50} />
           ) : (
             <Table
