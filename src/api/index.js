@@ -15,6 +15,8 @@ export function initalizeFirebase() {
   firebase.initializeApp(config);
 }
 
+initalizeFirebase();
+
 export function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
 
@@ -81,20 +83,11 @@ function getRestaurantVoteDecision(voters) {
   }
 }
 
-export function getRestaurantsNames() {
-  const resturantsRef = firebase.database().ref("/restaurants/");
-
-  return resturantsRef.once("value").then(snapshot => {
-    const result = [];
-    snapshot.forEach(childSnapshot => {
-      result.push(childSnapshot.key);
-    });
-    return result;
-  });
-}
-
 export function getAuthenticatedUserVotes() {
-  const userId = firebase.auth().currentUser.uid;
+  const user = firebase.auth().currentUser;
+  if (!user) throw "user is not authenticated";
+
+  const userId = user.uid;
   const usersRef = firebase.database().ref("/users/");
 
   return usersRef.once("value").then(snapshot => {

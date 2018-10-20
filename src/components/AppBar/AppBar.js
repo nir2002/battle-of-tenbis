@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -44,9 +45,10 @@ class MenuAppBar extends React.Component {
   };
 
   render() {
-    const { classes, user } = this.props;
+    const { classes, usersStore } = this.props;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
+    const user = usersStore.currentUser;
 
     return (
       <div className={classes.root}>
@@ -111,4 +113,4 @@ MenuAppBar.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(MenuAppBar);
+export default withStyles(styles)(inject("usersStore")(observer(MenuAppBar)));

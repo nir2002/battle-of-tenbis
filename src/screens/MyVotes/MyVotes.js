@@ -1,14 +1,10 @@
 import React from "react";
+import { observer, inject } from "mobx-react";
 import Table from "../../components/Tables/Table";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
-import {
-  getRestaurantsNames,
-  getAuthenticatedUserVotes,
-  vote
-} from "./../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { withStyles } from "@material-ui/core";
 
@@ -19,44 +15,16 @@ const styles = {
 };
 
 class MyVotes extends React.Component {
-  state = {
-    userVotes: null
-  };
-
-  componentDidMount() {
-    this.fetchUserVotes();
-  }
-
-  fetchUserVotes() {
-    getRestaurantsNames().then(restaurants => {
-      getAuthenticatedUserVotes().then(userVotes => {
-        const userVotesData = [];
-        restaurants.forEach((restaurant, index) => {
-          const userVote = {
-            id: index,
-            name: restaurant,
-            vote: null
-          };
-          if (userVotes[restaurant]) {
-            userVote.vote = userVotes[restaurant];
-          }
-          userVotesData.push(userVote);
-        });
-
-        this.setState({
-          userVotes: userVotesData
-        });
-      });
-    });
-  }
-
-  componentDidUpdate() {
-    if (this.state.userVotes) return;
-    this.fetchUserVotes();
-  }
-
   render() {
-    const { classes } = this.props;
+    const { classes, usersStore } = this.props;
+
+    if (!usersStore.currentUser) {
+      return (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          Please sign in to see your votes
+        </div>
+      );
+    }
 
     return (
       <section style={{ marginTop: 50 }}>
@@ -73,7 +41,7 @@ class MyVotes extends React.Component {
             justifyContent: "center"
           }}
         >
-          {!this.state.userVotes ? (
+          {usersStore.fetchingVotes ? (
             <CircularProgress color="secondary" size={50} />
           ) : (
             <Table
@@ -101,9 +69,7 @@ class MyVotes extends React.Component {
                           data.vote === "white" ? classes.userVote : ""
                         }
                         onClick={() => {
-                          vote(data.name, "white").then(() => {
-                            this.setState({ userVotes: null });
-                          });
+                          usersStore.vote(data.name, "white");
                         }}
                       >
                         <CheckIcon />
@@ -118,9 +84,7 @@ class MyVotes extends React.Component {
                           data.vote === "black" ? classes.userVote : ""
                         }
                         onClick={() => {
-                          vote(data.name, "black").then(() => {
-                            this.setState({ userVotes: null });
-                          });
+                          usersStore.vote(data.name, "black");
                         }}
                       >
                         <CloseIcon />
@@ -129,7 +93,7 @@ class MyVotes extends React.Component {
                   )
                 }
               ]}
-              data={this.state.userVotes}
+              data={usersStore.userVotes}
             />
           )}
         </div>
@@ -138,4 +102,4 @@ class MyVotes extends React.Component {
   }
 }
 
-export default withStyles(styles)(MyVotes);
+export default withStyles(styles)(inject("usersStore")(observer(MyVotes)));
