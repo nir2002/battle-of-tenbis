@@ -1,20 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "mobx-react";
+// import { Provider } from "mobx-react";
+import { Provider } from "react-redux";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
-import restaurntsStore from "./stores/restaurants";
-import usersStore from "./stores/users";
+// import restaurntsStore from "./stores/restaurants";
+// import usersStore from "./stores/users";
+import { createStore, applyMiddleware } from "redux";
+import rootReducer from "./reducers";
+import thunk from "redux-thunk";
 
-const stores = {
-  restaurantsStore: restaurntsStore,
-  usersStore: usersStore
-};
+// const stores = {
+//   restaurantsStore: restaurntsStore,
+//   usersStore: usersStore
+// };
+
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 ReactDOM.render(
-  <Provider {...stores}>
+  <Provider store={store}>
     <BrowserRouter>
       <App />
     </BrowserRouter>

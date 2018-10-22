@@ -1,17 +1,21 @@
 import React from "react";
-import { inject, observer } from "mobx-react";
+// import { inject, observer } from "mobx-react";
+import { connect } from "react-redux";
 import Table from "../../components/Tables/Table";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { fetchRestaurantsData } from "./../../actions/restaurants";
 
 class Restaurants extends React.Component {
   componentDidMount() {
-    const { restaurantsStore } = this.props;
-    restaurantsStore.fetchRestaurantsData();
+    // const { restaurantsStore } = this.props;
+    // restaurantsStore.fetchRestaurantsData();
+    this.props.fetchRestaurantsData();
   }
 
   render() {
-    const { restaurantsStore } = this.props;
+    // const { restaurantsStore } = this.props;
+    const { fetching, whiteListRestaurants, blackListRestaurants } = this.props;
 
     return (
       <section style={{ marginTop: 50 }}>
@@ -24,7 +28,7 @@ class Restaurants extends React.Component {
         </Typography>
 
         <div style={{ display: "flex", justifyContent: "space-around" }}>
-          {restaurantsStore.fetching ? (
+          {fetching ? (
             <CircularProgress color="secondary" size={50} />
           ) : (
             <Table
@@ -39,10 +43,10 @@ class Restaurants extends React.Component {
                   value: data => data.voters.map(voter => voter.name).join(", ")
                 }
               ]}
-              data={restaurantsStore.whiteListRestaurants}
+              data={whiteListRestaurants}
             />
           )}
-          {restaurantsStore.fetching ? (
+          {fetching ? (
             <CircularProgress color="secondary" size={50} />
           ) : (
             <Table
@@ -57,7 +61,7 @@ class Restaurants extends React.Component {
                   value: data => data.voters.map(voter => voter.name).join(", ")
                 }
               ]}
-              data={restaurantsStore.blackListRestaurants}
+              data={blackListRestaurants}
             />
           )}
         </div>
@@ -66,4 +70,23 @@ class Restaurants extends React.Component {
   }
 }
 
-export default inject("restaurantsStore")(observer(Restaurants));
+const mapStateToProps = state => {
+  return {
+    fetching: state.restaurants.fetching,
+    whiteListRestaurants: state.restaurants.whiteListRestaurants,
+    blackListRestaurants: state.restaurants.blackListRestaurants
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  fetchRestaurantsData: () => {
+    dispatch(fetchRestaurantsData());
+  }
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Restaurants);
+
+// export default inject("restaurantsStore")(observer(Restaurants));

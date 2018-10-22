@@ -1,5 +1,6 @@
 import React from "react";
-import { observer, inject } from "mobx-react";
+// import { observer, inject } from "mobx-react";
+import { connect } from "react-redux";
 import Table from "../../components/Tables/Table";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -7,6 +8,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { withStyles } from "@material-ui/core";
+import { voteOnRestaurant, fetchUserVotes } from "./../../actions/users";
 
 const styles = {
   userVote: {
@@ -15,10 +17,16 @@ const styles = {
 };
 
 class MyVotes extends React.Component {
-  render() {
-    const { classes, usersStore } = this.props;
+  componentDidMount() {
+    this.props.fetchUserVotes();
+  }
 
-    if (!usersStore.currentUser) {
+  render() {
+    const { classes } = this.props;
+
+    const { currentUser, fetchingVotes, userVotes, vote } = this.props;
+
+    if (!currentUser) {
       return (
         <div style={{ display: "flex", justifyContent: "center" }}>
           Please sign in to see your votes
@@ -41,7 +49,7 @@ class MyVotes extends React.Component {
             justifyContent: "center"
           }}
         >
-          {usersStore.fetchingVotes ? (
+          {fetchingVotes ? (
             <CircularProgress color="secondary" size={50} />
           ) : (
             <Table
@@ -69,7 +77,7 @@ class MyVotes extends React.Component {
                           data.vote === "white" ? classes.userVote : ""
                         }
                         onClick={() => {
-                          usersStore.vote(data.name, "white");
+                          vote(data.name, "white");
                         }}
                       >
                         <CheckIcon />
@@ -84,7 +92,7 @@ class MyVotes extends React.Component {
                           data.vote === "black" ? classes.userVote : ""
                         }
                         onClick={() => {
-                          usersStore.vote(data.name, "black");
+                          vote(data.name, "black");
                         }}
                       >
                         <CloseIcon />
@@ -93,7 +101,7 @@ class MyVotes extends React.Component {
                   )
                 }
               ]}
-              data={usersStore.userVotes}
+              data={userVotes}
             />
           )}
         </div>
@@ -102,4 +110,26 @@ class MyVotes extends React.Component {
   }
 }
 
-export default withStyles(styles)(inject("usersStore")(observer(MyVotes)));
+const mapStateToProps = state => ({
+  currentUser: state.users.currentUser,
+  fetchingVotes: state.users.fetchingVotes,
+  userVotes: state.users.userVotes
+});
+
+const mapDispatchToProps = dispatch => ({
+  vote: (restaurantId, vote) => {
+    dispatch(voteOnRestaurant(restaurantId, vote));
+  },
+  fetchUserVotes: () => {
+    dispatch(fetchUserVotes());
+  }
+});
+
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MyVotes)
+);
+
+// export default withStyles(styles)(inject("usersStore")(observer(MyVotes)));

@@ -1,5 +1,6 @@
 import React from "react";
-import { inject, observer } from "mobx-react";
+// import { inject, observer } from "mobx-react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -13,6 +14,7 @@ import { signInWithGoogle, signOut } from "./../../api/";
 import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import deepOrange from "@material-ui/core/colors/deepOrange";
+import { initAuthCallback } from "./../../actions/users";
 
 const styles = {
   root: {
@@ -32,6 +34,11 @@ const styles = {
 };
 
 class MenuAppBar extends React.Component {
+  constructor(props) {
+    super(props);
+    props.initAuthCallback();
+  }
+
   state = {
     anchorEl: null
   };
@@ -45,10 +52,11 @@ class MenuAppBar extends React.Component {
   };
 
   render() {
-    const { classes, usersStore } = this.props;
+    const { classes } = this.props;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
-    const user = usersStore.currentUser;
+    // const user = usersStore.currentUser;
+    const { user } = this.props;
 
     return (
       <div className={classes.root}>
@@ -113,4 +121,19 @@ MenuAppBar.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(inject("usersStore")(observer(MenuAppBar)));
+const mapStateToProps = state => ({
+  user: state.users.currentUser
+});
+
+const mapDispatchToProps = dispatch => ({
+  initAuthCallback: () => dispatch(initAuthCallback())
+});
+
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MenuAppBar)
+);
+
+// export default withStyles(styles)(inject("usersStore")(observer(MenuAppBar)));
