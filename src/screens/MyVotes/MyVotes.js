@@ -28,24 +28,23 @@ class MyVotes extends React.Component {
   }
 
   fetchUserVotes() {
-    getRestaurantsNames().then(restaurants => {
-      getAuthenticatedUserVotes().then(userVotes => {
-        const userVotesData = [];
-        restaurants.forEach((restaurant, index) => {
-          const userVote = {
-            id: index,
-            name: restaurant,
-            vote: null
-          };
-          if (userVotes[restaurant]) {
-            userVote.vote = userVotes[restaurant];
-          }
-          userVotesData.push(userVote);
-        });
+    getAuthenticatedUserVotes().then(userVotes => {
+      const userVotesData = [];
+      const restaurantsNames = Object.keys(userVotes);
+      restaurantsNames.forEach((restaurant, index) => {
+        const userVote = {
+          id: index,
+          name: restaurant,
+          vote: null
+        };
+        if (userVotes[restaurant]) {
+          userVote.vote = userVotes[restaurant];
+        }
+        userVotesData.push(userVote);
+      });
 
-        this.setState({
-          userVotes: userVotesData
-        });
+      this.setState({
+        userVotes: userVotesData
       });
     });
   }
