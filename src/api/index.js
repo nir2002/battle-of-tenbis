@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
-require("firebase/auth");
-require("firebase/database");
+import "firebase/auth";
+import "firebase/database";
 
 export function initalizeFirebase() {
   const config = {
@@ -85,11 +85,10 @@ function getRestaurantVoteDecision(voters) {
 
 export function getAuthenticatedUserVotes() {
   const user = firebase.auth().currentUser;
-  if (!user) throw "user is not authenticated";
+  if (!user) throw new Error("user is not authenticated");
 
   const userId = user.uid;
   const usersRef = firebase.database().ref("/users/");
-
   return usersRef.once("value").then(snapshot => {
     const userVotes = {};
     snapshot.forEach(childSnapshot => {
