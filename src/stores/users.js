@@ -1,6 +1,6 @@
-import { decorate, observable, action, computed, when } from "mobx";
+import { decorate, observable, action, computed } from "mobx";
 import { getAuthenticatedUserVotes, vote } from "../api";
-import restaurantsStore from "./restaurants";
+// import restaurantsStore from "./restaurants";
 import firebase from "firebase/app";
 
 class Users {
@@ -8,37 +8,31 @@ class Users {
   fetchingVotes = true;
 
   constructor() {
-    when(
-      () => restaurantsStore.data.length > 0,
-      () => {
-        firebase.auth().onAuthStateChanged(user => {
-          if (user) {
-            // User is signed in.
-            this.currentUser = {
-              displayName: user.displayName,
-              email: user.email,
-              emailVerified: user.emailVerified,
-              photoURL: user.photoURL,
-              isAnonymous: user.isAnonymous,
-              uid: user.uid,
-              providerData: user.providerData
-            };
-            this.fetchUserVotes();
-          } else {
-            this.currentUser = null;
-          }
-        });
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in.
+        this.currentUser = {
+          displayName: user.displayName,
+          email: user.email,
+          emailVerified: user.emailVerified,
+          photoURL: user.photoURL,
+          isAnonymous: user.isAnonymous,
+          uid: user.uid,
+          providerData: user.providerData
+        };
+        this.fetchUserVotes();
+      } else {
+        this.currentUser = null;
       }
-    );
+    });
   }
 
   fetchUserVotes() {
     this.fetchingVotes = true;
 
-    const restaurantsNames = restaurantsStore.restaurantsNames;
-
     getAuthenticatedUserVotes().then(userVotes => {
       const userVotesData = [];
+      const restaurantsNames = Object.keys(userVotes);
       restaurantsNames.forEach((restaurant, index) => {
         const userVote = {
           id: index,
@@ -70,9 +64,9 @@ class Users {
 decorate(Users, {
   currentUser: observable,
   fetchingVotes: observable,
+  userVotes: computed,
   fetchUserVotes: action,
-  vote: action,
-  userVotes: computed
+  vote: action
 });
 
 export default new Users();
