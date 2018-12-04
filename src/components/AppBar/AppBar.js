@@ -1,35 +1,18 @@
-import React from "react";
-import { inject, observer } from "mobx-react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
-import { Link } from "react-router-dom";
-import { signInWithGoogle, signOut } from "./../../api/";
-import Button from "@material-ui/core/Button";
-import Avatar from "@material-ui/core/Avatar";
-import deepOrange from "@material-ui/core/colors/deepOrange";
-
-const styles = {
-  root: {
-    flexGrow: 1
-  },
-  title: {
-    flexGrow: 1
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20
-  },
-  orangeAvatar: {
-    color: "#fff",
-    backgroundColor: deepOrange[500]
-  }
-};
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import { Link } from 'react-router-dom';
+import { signInWithGoogle, signOut } from './../../api/';
+import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
+import deepOrange from '@material-ui/core/colors/deepOrange';
 
 class MenuAppBar extends React.Component {
   state = {
@@ -59,8 +42,19 @@ class MenuAppBar extends React.Component {
             </Typography>
             {user && (
               <div>
+                <Link
+                  to="my-votes"
+                  style={{
+                    textDecoration: 'none'
+                  }}
+                >
+                  <Button variant="contained" color="primary">
+                    My Votes
+                  </Button>
+                </Link>
+
                 <IconButton
-                  aria-owns={open ? "menu-appbar" : null}
+                  aria-owns={open ? 'menu-appbar' : null}
                   aria-haspopup="true"
                   onClick={this.handleMenu}
                   color="inherit"
@@ -77,26 +71,16 @@ class MenuAppBar extends React.Component {
                   id="menu-appbar"
                   anchorEl={anchorEl}
                   anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right"
+                    vertical: 'top',
+                    horizontal: 'right'
                   }}
                   transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right"
+                    vertical: 'top',
+                    horizontal: 'right'
                   }}
                   open={open}
                   onClose={this.handleClose}
                 >
-                  <MenuItem onClick={this.handleClose}>
-                    <Link
-                      to="my-votes"
-                      style={{
-                        textDecoration: "none"
-                      }}
-                    >
-                      My Votes
-                    </Link>
-                  </MenuItem>
                   <MenuItem onClick={signOut}>Sign Out</MenuItem> :
                 </Menu>
               </div>
@@ -113,4 +97,19 @@ MenuAppBar.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(inject("usersStore")(observer(MenuAppBar)));
+export default withStyles({
+  root: {
+    flexGrow: 1
+  },
+  title: {
+    flexGrow: 1
+  },
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 20
+  },
+  orangeAvatar: {
+    color: '#fff',
+    backgroundColor: deepOrange[500]
+  }
+})(inject('usersStore')(observer(MenuAppBar)));
