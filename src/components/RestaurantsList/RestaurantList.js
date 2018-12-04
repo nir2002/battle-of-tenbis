@@ -34,6 +34,7 @@ RestaurantList.propTypes = {
 
 export default withStyles({
   root: {
-    textAlign: 'center'
+    textAlign: 'center',
+    flex: 0.4
   }
 })(RestaurantList);
