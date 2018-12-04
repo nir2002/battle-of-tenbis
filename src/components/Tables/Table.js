@@ -1,24 +1,23 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import { CustomizedTableCell } from "./utils";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import { CustomizedTableCell } from './utils';
 
 const styles = theme => ({
   root: {
-    width: "35%",
     marginTop: theme.spacing.unit * 3,
-    overflowX: "auto"
+    overflowX: 'auto'
   },
   table: {
     minWidth: 200
   },
   row: {
-    "&:nth-of-type(odd)": {
+    '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.background.default
     }
   }
@@ -35,7 +34,7 @@ function CustomizedTable(props) {
         <TableHead>
           <TableRow>
             {rows.map((row, index) => (
-              <TableCell style={{ textAlign: "center" }} key={index}>
+              <TableCell style={{ textAlign: 'center' }} key={index}>
                 {row.label}
               </TableCell>
             ))}
@@ -45,7 +44,7 @@ function CustomizedTable(props) {
           {data.map(rowData => (
             <TableRow className={classes.row} key={rowData.id}>
               {rows.map((row, index) => (
-                <TableCell style={{ textAlign: "center" }} key={index}>
+                <TableCell style={{ textAlign: 'center' }} key={index}>
                   {row.value(rowData)}
                 </TableCell>
               ))}

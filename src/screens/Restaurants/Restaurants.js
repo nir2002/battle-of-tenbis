@@ -1,8 +1,9 @@
-import React from "react";
-import { inject, observer } from "mobx-react";
-import Table from "../../components/Tables/Table";
-import Typography from "@material-ui/core/Typography";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import RestaurantList from '../../components/RestaurantsList';
+import { withStyles } from '@material-ui/core';
 
 class Restaurants extends React.Component {
   componentDidMount() {
@@ -11,54 +12,30 @@ class Restaurants extends React.Component {
   }
 
   render() {
-    const { restaurantsStore } = this.props;
+    const { restaurantsStore, classes } = this.props;
 
     return (
-      <section style={{ marginTop: 50 }}>
-        <Typography
-          variant="h6"
-          color="inherit"
-          style={{ textAlign: "center", marginBottom: 50 }}
-        >
+      <section className={classes.root}>
+        <Typography variant="h3" color="inherit" className={classes.title}>
           Resatuarnts
         </Typography>
 
-        <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <div className={classes.restaurantsLists}>
           {restaurantsStore.fetching ? (
-            <CircularProgress color="secondary" size={50} />
+            <CircularProgress color="secondary" size={100} />
           ) : (
-            <Table
-              color="white"
-              rows={[
-                {
-                  label: "Name",
-                  value: data => data.name
-                },
-                {
-                  label: "Voters",
-                  value: data => data.voters.map(voter => voter.name).join(", ")
-                }
-              ]}
-              data={restaurantsStore.whiteListRestaurants}
-            />
-          )}
-          {restaurantsStore.fetching ? (
-            <CircularProgress color="secondary" size={50} />
-          ) : (
-            <Table
-              color="black"
-              rows={[
-                {
-                  label: "Name",
-                  value: data => data.name
-                },
-                {
-                  label: "Voters",
-                  value: data => data.voters.map(voter => voter.name).join(", ")
-                }
-              ]}
-              data={restaurantsStore.blackListRestaurants}
-            />
+            <React.Fragment>
+              <RestaurantList
+                title="White List"
+                color="white"
+                data={restaurantsStore.whiteListRestaurants}
+              />
+              <RestaurantList
+                title="Black List"
+                color="black"
+                data={restaurantsStore.blackListRestaurants}
+              />
+            </React.Fragment>
           )}
         </div>
       </section>
@@ -66,4 +43,20 @@ class Restaurants extends React.Component {
   }
 }
 
-export default inject("restaurantsStore")(observer(Restaurants));
+const connectedRestaurants = inject('restaurantsStore')(observer(Restaurants));
+
+const styledConnectedRestaurants = withStyles({
+  root: {
+    marginTop: 50
+  },
+  title: {
+    textAlign: 'center',
+    marginBottom: 50
+  },
+  restaurantsLists: {
+    display: 'flex',
+    justifyContent: 'space-around'
+  }
+})(connectedRestaurants);
+
+export default styledConnectedRestaurants;
